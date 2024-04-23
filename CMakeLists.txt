@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 option(BUILD_FOR_TESTS "Build the project for unit tests" OFF)
 add_subdirectory(lexer)
+add_subdirectory(parser)
 if (BUILD_FOR_TESTS)
     add_subdirectory(tests)
 else()
