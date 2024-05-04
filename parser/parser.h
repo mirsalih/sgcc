@@ -2,16 +2,16 @@
 #define __AST_PARSER_H__
 
 #include <vector>
-#include <memory.h>
 #include "ast_nodes.h"
-#include "../lexer/token.h"
 
 namespace sgcc
 {
+// forward declaration
+class Token;
+
 class Parser {
 public:
-    explicit Parser(std::vector<Token>);
-    std::unique_ptr<Program> parseProgram();
+    std::unique_ptr<Program> parseProgram(const std::vector<Token>&);
 
 private:
     void advance();
@@ -19,8 +19,8 @@ private:
     std::unique_ptr<Statement> parseStatement();
     std::unique_ptr<Exp> parseExpression();
 
-    const std::vector<Token> tokens;
     std::vector<Token>::const_iterator current;
+    std::vector<Token>::const_iterator end;
 };
 }
 

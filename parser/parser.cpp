@@ -1,24 +1,24 @@
 #include <memory>
 #include <exception>
+
 #include "parser.h"
+#include "../lexer/token.h"
 
 namespace sgcc
 {
-
-Parser::Parser(std::vector<Token> t): tokens(t)
-{
-    //TODO: at advance change this with project related exceptions.
-    if(t.empty()) throw std::runtime_error("empty token container!");
-    current = tokens.begin();
-}
 
 /**
  * @brief Formal grammar for <program> ::= <function>
  * 
  * @return std::unique_ptr<Program> 
  */
-std::unique_ptr<Program> Parser::parseProgram()
+std::unique_ptr<Program> Parser::parseProgram(const std::vector<Token>& tokens)
 {
+    //TODO: at advance change this with project related exceptions.
+    if(tokens.empty()) throw std::runtime_error("empty token container!");
+    current = tokens.cbegin();
+    end = tokens.cend();
+
     auto function = parseFunction();
     if (function) {
         return std::make_unique<Program>(std::move(function));
@@ -27,7 +27,7 @@ std::unique_ptr<Program> Parser::parseProgram()
 }
 
 void Parser::advance() {
-    if(current != tokens.end()) current++;
+    if(current != end) ++current;
 }
 
 /**
@@ -48,6 +48,7 @@ std::unique_ptr<Function> Parser::parseFunction() {
     if (current->type != TokenType::OPEN_BRACE) return nullptr;
     advance();
     auto statement = parseStatement();
+    if(!statement) return nullptr;
     if (current->type != TokenType::CLOSE_BRACE) return nullptr;
     advance();
     return std::make_unique<Function>(name, std::move(statement));
@@ -62,6 +63,7 @@ std::unique_ptr<Statement> Parser::parseStatement() {
     if (current->type != TokenType::RETURN_KEYWORD) return nullptr;
     advance();
     auto expression = parseExpression();
+    if(!expression) return nullptr;
     if (current->type != TokenType::SEMICOLON) return nullptr;
     advance();
     return std::make_unique<Return>(std::move(expression));

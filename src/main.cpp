@@ -1,14 +1,13 @@
 #include <iostream>
 #include "../inc/reader.h"
 #include "../inc/selectedExample.h"
-#include "../lexer/lexer.h"
 #include "../parser/parser.h"
+#include "../lexer/lexer.h"
 
 int main() {
+    const auto tokens = sgcc::Lexer{}.tokenize(SourceReader{}(test::getSelectedExample()));
     try{
-        sgcc::Lexer lexer(SourceReader{}(test::getSelectedExample()));
-        sgcc::Parser parser(lexer.tokenize());
-        auto program = parser.parseProgram();
+        auto program = sgcc::Parser{}.parseProgram(tokens);
         if(program) {
             program->print(std::cout);
         }

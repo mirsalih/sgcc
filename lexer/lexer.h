@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <cctype>
-#include <iosfwd>
 
 #include "token.h"
 
@@ -11,8 +10,7 @@ namespace sgcc
 {
 class Lexer {
 public:
-    explicit Lexer(const std::string&);
-    std::vector<Token> tokenize();
+    std::vector<Token> tokenize(const std::string&);
 
 private:
     void advance();

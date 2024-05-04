@@ -7,11 +7,6 @@ std::ostream& operator<<(std::ostream& os, TokenType tt)
     return os << tokenTypesStr[static_cast<int>(tt)];
 }
 
-Lexer::Lexer(const std::string& input): input(input), pos(0), currentChar(input[pos])
-{
-
-}
-
 void Lexer::advance()
 {
     pos++;
@@ -52,9 +47,12 @@ Token Lexer::number()
     return {TokenType::NUMBER, result};
 }
 
-std::vector<Token> Lexer::tokenize()
+std::vector<Token> Lexer::tokenize(const std::string& str)
 {
     std::vector<Token> tokens;
+    input = str;
+    pos = 0;
+    currentChar = input[0];
 
     while (currentChar != '\0') {
         skipWhitespace();
@@ -85,10 +83,6 @@ std::vector<Token> Lexer::tokenize()
                     break;
                 case '}':
                     tokens.push_back({TokenType::CLOSE_BRACE, "}"});
-                    advance();
-                    break;
-                default:
-                    tokens.push_back({TokenType::INVALID, std::string(1, currentChar)});
                     advance();
                     break;
             }
