@@ -21,6 +21,7 @@ add_executable(
 target_link_libraries(
   test_main
   lexerlib
+  parserlib
   gtest_main
 )
 

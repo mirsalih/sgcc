@@ -1,16 +1,24 @@
-#include <gtest/gtest.h>
-#include "../lexer/lexer.h"
+#include "test_environment.h"
 
-TEST(lexerTest, TokenSizeCheck) {
+#define TEST_LEXER 1
+#define TEST_PARSER 1
 
-    std::string input = "int main( {\n  return 0; }";
-    sgcc::Lexer lexer(input);
-    std::vector<sgcc::Token> tokens = lexer.tokenize();
+#if TEST_LEXER
+#include "stage1_lexer.h"
+#endif
 
-    ASSERT_EQ(9, tokens.size());
-}
+#if TEST_PARSER
+#include "stage1_parser.h"
+#endif
 
-int main(int argc, char **argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+
+    std::string folder(argc == 2 ? argv[1] : "");
+    test::envr = dynamic_cast<TestEnvironment*>(testing::AddGlobalTestEnvironment(
+                                                    new TestEnvironment(folder)));
+
+    return RUN_ALL_TESTS();
 }

@@ -4,7 +4,7 @@ project(sgcc VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-option(BUILD_FOR_TESTS "Build the project for unit tests" OFF)
+option(BUILD_FOR_TESTS "Build the project for unit tests" ON)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
 add_subdirectory(lexer)
 add_subdirectory(parser)
