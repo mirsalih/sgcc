@@ -1,27 +1,34 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+
+#include "../inc/compiler.h"
 #include "../inc/reader.h"
-#include "../inc/selectedExample.h"
-#include "../parser/parser.h"
-#include "../lexer/lexer.h"
-#include "../code-generator/cogen.h"
 
-int main() {
-    const auto tokens = sgcc::Lexer{}.tokenize(SourceReader{}(test::getSelectedExample()));
-    try{
-        auto program = sgcc::Parser{}.parseProgram(tokens);
-        if(program) {
-            program->print(std::cout);
+/**
+ * @brief 
+ * 
+ * @param argc 
+ * @param argv 
+ * @return int 
+ */
+int main(int argc, char** argv) {
+    using namespace std;
+    if(argc < 2) {
+        std::cerr << "no input file ";
+        return 0;
+    }
 
-            std::ofstream ofs("out.s");
-            if(!ofs) throw std::runtime_error("failed to open assembler file");
-            sgcc::Cogen{ofs, *program};
-        }
-        else {
-            std::cout<< "Erro accured";
-        }
+    try {
+        const std::string sourCode = SourceReader{}(argv[1]);
+        const std::string outFName{argc > 2 ? argv[2] : "out.s"};
+        std::ofstream ofs(outFName);
+        if(!ofs) throw std::runtime_error("failed to open output file: "s + outFName);
+
+        sgcc::compile(sourCode, ofs);
     }
     catch(const std::exception& e) {
-        std::cout<< "Error Chached!!!!! " << e.what();
+        std::cout<< "Error catched: " << e.what();
     }
     
     return 0;
