@@ -39,43 +39,43 @@ protected:
 
 TEST_F(LexerTestStage_2, bitwiseZero) {
     SourceCode sourceCode{"stage_2/valid/bitwise_zero.c"};
-    makeTestTokens({{tt::UNARY_OPRATION, "~"}, {tt::NUMBER, "0"}});
+    makeTestTokens({{tt::OPERATOR, "~"}, {tt::NUMBER, "0"}});
     validTest(sourceCode.src);
 }
 
 TEST_F(LexerTestStage_2, bitwise) {
     SourceCode sourceCode{"stage_2/valid/bitwise.c"};
-    makeTestTokens({{tt::UNARY_OPRATION, "~"}, {tt::NUMBER, "12"}});
+    makeTestTokens({{tt::OPERATOR, "~"}, {tt::NUMBER, "12"}});
     validTest(sourceCode.src);
 }
 
 TEST_F(LexerTestStage_2, neg) {
     SourceCode sourceCode{"stage_2/valid/neg.c"};
-    makeTestTokens({{tt::UNARY_OPRATION, "-"}, {tt::NUMBER, "5"}});
+    makeTestTokens({{tt::OPERATOR, "-"}, {tt::NUMBER, "5"}});
     validTest(sourceCode.src);
 }
 
 TEST_F(LexerTestStage_2, nestedOps) {
     SourceCode sourceCode{"stage_2/valid/nested_ops.c"};
-    makeTestTokens({{tt::UNARY_OPRATION, "!"}, {tt::UNARY_OPRATION, "-"}, {tt::NUMBER, "3"}});
+    makeTestTokens({{tt::OPERATOR, "!"}, {tt::OPERATOR, "-"}, {tt::NUMBER, "3"}});
     validTest(sourceCode.src);
 }
 
 TEST_F(LexerTestStage_2, nestedOps2) {
     SourceCode sourceCode{"stage_2/valid/nested_ops_2.c"};
-    makeTestTokens({{tt::UNARY_OPRATION, "-"}, {tt::UNARY_OPRATION, "~"}, {tt::NUMBER, "0"}});
+    makeTestTokens({{tt::OPERATOR, "-"}, {tt::OPERATOR, "~"}, {tt::NUMBER, "0"}});
     validTest(sourceCode.src);
 }
 
 TEST_F(LexerTestStage_2, notFive) {
     SourceCode sourceCode{"stage_2/valid/not_five.c"};
-    makeTestTokens({{tt::UNARY_OPRATION, "!"}, {tt::NUMBER, "5"}});
+    makeTestTokens({{tt::OPERATOR, "!"}, {tt::NUMBER, "5"}});
     validTest(sourceCode.src);
 }
 
 TEST_F(LexerTestStage_2, notZero) {
     SourceCode sourceCode{"stage_2/valid/not_zero.c"};
-    makeTestTokens({{tt::UNARY_OPRATION, "!"}, {tt::NUMBER, "0"}});
+    makeTestTokens({{tt::OPERATOR, "!"}, {tt::NUMBER, "0"}});
     validTest(sourceCode.src);
 }
 

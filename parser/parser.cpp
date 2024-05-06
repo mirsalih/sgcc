@@ -80,7 +80,7 @@ std::unique_ptr<Exp> Parser::parseExpression() {
         advance();
         return std::make_unique<Constant>(value);
     }
-    else if(current->type == TokenType::UNARY_OPRATION){
+    else if(current->type == TokenType::OPERATOR){
         Operator op;
         if(current->text == "-") op = Operator::NEGATION;
         else if(current->text == "!") op = Operator::LOGICAL_NEGATION;
