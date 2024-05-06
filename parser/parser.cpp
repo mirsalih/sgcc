@@ -75,9 +75,24 @@ std::unique_ptr<Statement> Parser::parseStatement() {
  * @return std::unique_ptr<Exp> 
  */
 std::unique_ptr<Exp> Parser::parseExpression() {
-    if (current->type != TokenType::NUMBER) return nullptr;
-    int value = std::stoi(current->text);
-    advance();
-    return std::make_unique<Constant>(value);
+    if(current->type == TokenType::NUMBER) {
+        int value = std::stoi(current->text);
+        advance();
+        return std::make_unique<Constant>(value);
+    }
+    else if(current->type == TokenType::UNARY_OPRATION){
+        Operator op;
+        if(current->text == "-") op = Operator::NEGATION;
+        else if(current->text == "!") op = Operator::LOGICAL_NEGATION;
+        else if(current->text == "~") op = Operator::BWISE_COMPLEMENT;
+        advance();
+
+        if (auto expr = parseExpression(); expr != nullptr) {
+            return std::make_unique<UnaryOp>(op, std::move(expr));
+        }
+    }
+
+    return nullptr;
 }
+
 }
