@@ -97,6 +97,18 @@ std::vector<Token> Lexer::tokenize(const std::string& str)
                     tokens.push_back({TokenType::OPERATOR, "~"});
                     advance();
                     break;
+                case '+':
+                    tokens.push_back({TokenType::OPERATOR, "+"});
+                    advance();
+                    break;
+                case '*':
+                    tokens.push_back({TokenType::OPERATOR, "*"});
+                    advance();
+                    break;
+                case '/':
+                    tokens.push_back({TokenType::OPERATOR, "/"});
+                    advance();
+                    break;
             }
         }
     }
