@@ -85,6 +85,18 @@ std::vector<Token> Lexer::tokenize(const std::string& str)
                     tokens.push_back({TokenType::CLOSE_BRACE, "}"});
                     advance();
                     break;
+                case '-':
+                    tokens.push_back({TokenType::UNARY_OPRATION, "-"});
+                    advance();
+                    break;
+                case '!':
+                    tokens.push_back({TokenType::UNARY_OPRATION, "!"});
+                    advance();
+                    break;
+                case '~':
+                    tokens.push_back({TokenType::UNARY_OPRATION, "~"});
+                    advance();
+                    break;
             }
         }
     }
