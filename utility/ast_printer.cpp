@@ -3,6 +3,29 @@
 
 namespace sgcc
 {
+std::ostream& printExpr(std::ostream& os, const Exp& expr)
+{
+    if(expr.kind() == ExprKind::UnaryOp) {
+        const auto& op = static_cast<const UnaryOp&>(expr);
+
+        if(op.oprtor == Operator::NEGATION) {
+            os << "OP<-> ";
+        }
+        if(op.oprtor == Operator::LOGICAL_NEGATION) {
+            os << "OP<!> ";
+        }
+        if(op.oprtor == Operator::BWISE_COMPLEMENT) {
+            os << "OP<~> ";
+        }
+        return printExpr(os, *op.expression);
+    }
+    else {
+        const auto& c = static_cast<const Constant&>(expr);
+        os << "Int<" << c.value <<">\n";
+        return os;
+    }
+}
+
 std::ostream& print(std::ostream& os, const Node& ast)
 {
     const Program& p = dynamic_cast<const Program&>(ast);
@@ -10,8 +33,9 @@ std::ostream& print(std::ostream& os, const Node& ast)
     os << "\tparams: ()\n";
     os << "\tbody:\n";
     const Return& r = dynamic_cast<const Return&>(*p.function->body);
-    const Constant& c = dynamic_cast<const Constant&>(*r.expression);
-    os << "\t\tRETURN Int<" << c.value <<">\n";
+    os << "\t\tRETURN ";
+    printExpr(os, *r.expression);
+
     return os;
 }
 
