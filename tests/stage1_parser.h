@@ -8,19 +8,19 @@
 #include "../parser/parser.h"
 #include "../lexer/lexer.h"
 
-class ParserTest : public ::testing::Test {
+class ParserTestStage_1 : public ::testing::Test {
 protected:
     void validTest(const std::string& funcName, int constVal, const std::string& sourceCode) {
         auto pp = parser.parseProgram(lexer.tokenize(sourceCode));
 
         EXPECT_TRUE(pp);
-        EXPECT_EQ(pp.get()->function.get()->name, funcName);
+        EXPECT_EQ(pp->function->name, funcName);
 
         sgcc::Return* returnStatement;
-        EXPECT_NO_THROW(returnStatement = dynamic_cast<sgcc::Return*>(pp->function->body.get()));
+        EXPECT_TRUE(returnStatement = dynamic_cast<sgcc::Return*>(pp->function->body.get()));
 
         sgcc::Constant* constant;
-        EXPECT_NO_THROW(constant = dynamic_cast<sgcc::Constant*>(returnStatement->expression.get()));
+        EXPECT_TRUE(constant = dynamic_cast<sgcc::Constant*>(returnStatement->expression.get()));
         EXPECT_EQ(constant->value, constVal);
     }
     
@@ -34,52 +34,52 @@ protected:
     sgcc::Lexer lexer;
 };
 
-TEST_F(ParserTest, multiDigit) {
+TEST_F(ParserTestStage_1, multiDigit) {
     validTest("main", 100, SourceCode{"stage_1/valid/multi_digit.c"}.src);
 }
 
-TEST_F(ParserTest, newlines) {
+TEST_F(ParserTestStage_1, newlines) {
     validTest("main", 0, SourceCode{"stage_1/valid/newlines.c"}.src);
 }
 
-TEST_F(ParserTest, noNewlines) {
+TEST_F(ParserTestStage_1, noNewlines) {
     validTest("main", 0, SourceCode{"stage_1/valid/no_newlines.c"}.src);
 }
 
-TEST_F(ParserTest, return0) {
+TEST_F(ParserTestStage_1, return0) {
     validTest("main", 0, SourceCode{"stage_1/valid/return_0.c"}.src);
 }
 
-TEST_F(ParserTest, return2) {
+TEST_F(ParserTestStage_1, return2) {
     validTest("main", 2, SourceCode{"stage_1/valid/return_2.c"}.src);
 }
 
-TEST_F(ParserTest, spaces) {
+TEST_F(ParserTestStage_1, spaces) {
     validTest("main", 0, SourceCode{"stage_1/valid/spaces.c"}.src);
 }
 
 // Invalid source code tests
-TEST_F(ParserTest, missingParenthes) {
+TEST_F(ParserTestStage_1, missingParenthes) {
     invalidTest(SourceCode{"stage_1/invalid/missing_paren.c"}.src);
 }
 
-TEST_F(ParserTest, missingRetval) {
+TEST_F(ParserTestStage_1, missingRetval) {
     invalidTest(SourceCode{"stage_1/invalid/missing_retval.c"}.src);
 }
 
-TEST_F(ParserTest, noBrace) {
+TEST_F(ParserTestStage_1, noBrace) {
     invalidTest(SourceCode{"stage_1/invalid/no_brace.c"}.src);
 }
 
-TEST_F(ParserTest, noSemicolon) {
+TEST_F(ParserTestStage_1, noSemicolon) {
     invalidTest(SourceCode{"stage_1/invalid/no_semicolon.c"}.src);
 }
 
-TEST_F(ParserTest, noSpace) {
+TEST_F(ParserTestStage_1, noSpace) {
     invalidTest(SourceCode{"stage_1/invalid/no_space.c"}.src);
 }
 
-TEST_F(ParserTest, wrongCase) {
+TEST_F(ParserTestStage_1, wrongCase) {
     invalidTest(SourceCode{"stage_1/invalid/wrong_case.c"}.src);
 }
 

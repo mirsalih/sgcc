@@ -6,7 +6,7 @@
 #include "test_environment.h"
 #include "../lexer/lexer.h"
 
-class LexerTest : public ::testing::Test {
+class LexerTestStage_1 : public ::testing::Test {
 protected:
     void validTest(const std::string& funcName, const std::string& constVal,
                    const std::string& sourceCode) {
@@ -39,7 +39,7 @@ protected:
     sgcc::Lexer lexer;
 };
 
-TEST_F(LexerTest, doubleInvokeTokenize) {
+TEST_F(LexerTestStage_1, doubleInvokeTokenize) {
     std::string sourceCode = "int main () \n{\n\treturn 1;\n}\n";
     auto tokens1 = lexer.tokenize(sourceCode);
     auto tokens2 = lexer.tokenize(sourceCode);
@@ -51,27 +51,27 @@ TEST_F(LexerTest, doubleInvokeTokenize) {
     EXPECT_EQ(tokens1[1].text, tokens2[1].text);
 }
 
-TEST_F(LexerTest, multiDigit) {
+TEST_F(LexerTestStage_1, multiDigit) {
     validTest("main", "100", SourceCode{"stage_1/valid/multi_digit.c"}.src);
 }
 
-TEST_F(LexerTest, newlines) {
+TEST_F(LexerTestStage_1, newlines) {
     validTest("main", "0", SourceCode{"stage_1/valid/newlines.c"}.src);
 }
 
-TEST_F(LexerTest, NoNewlines) {
+TEST_F(LexerTestStage_1, NoNewlines) {
     validTest("main", "0", SourceCode{"stage_1/valid/no_newlines.c"}.src);
 }
 
-TEST_F(LexerTest, return0) {
+TEST_F(LexerTestStage_1, return0) {
     validTest("main", "0", SourceCode{"stage_1/valid/return_0.c"}.src);
 }
 
-TEST_F(LexerTest, return2) {
+TEST_F(LexerTestStage_1, return2) {
     validTest("main", "2", SourceCode{"stage_1/valid/return_2.c"}.src);
 }
 
-TEST_F(LexerTest, spaces) {
+TEST_F(LexerTestStage_1, spaces) {
     validTest("main", "0", SourceCode{"stage_1/valid/spaces.c"}.src);
 }
 
