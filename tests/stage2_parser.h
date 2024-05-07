@@ -35,7 +35,7 @@ protected:
         EXPECT_TRUE(testProgExp = dynamic_cast<Exp*>(testProgRet->expression.get()));
 
         // unary operator tests
-        while(progExp->kind() == ExprKind::UnaryOp && testProgExp->kind() == ExprKind::UnaryOp) {
+        while(progExp->kind() == ExprKind::UNARY_OP && testProgExp->kind() == ExprKind::UNARY_OP) {
             UnaryOp* op = static_cast<UnaryOp*>(progExp);
             UnaryOp* testOp = static_cast<UnaryOp*>(testProgExp);
             

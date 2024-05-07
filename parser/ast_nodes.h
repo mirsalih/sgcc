@@ -12,7 +12,7 @@ enum class Operator {
 };
 
 enum class ExprKind {
-    Constant, UnaryOp
+    CONSTANT, UNARY_OP
 };
 
 struct Node {
@@ -31,7 +31,7 @@ struct Constant: Exp {
     }
 
     ExprKind kind() const override {
-        return ExprKind::Constant;
+        return ExprKind::CONSTANT;
     }
 };
 
@@ -44,7 +44,7 @@ struct UnaryOp: Exp {
     }
 
     ExprKind kind() const override {
-        return ExprKind::UnaryOp;
+        return ExprKind::UNARY_OP;
     }
 };
 

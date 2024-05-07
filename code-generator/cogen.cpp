@@ -10,7 +10,7 @@ namespace sgcc
 void exprToInstruction(std::vector<std::string>& vec, const Exp& expr) {
     using namespace std;
 
-    if(expr.kind() == ExprKind::UnaryOp) {
+    if(expr.kind() == ExprKind::UNARY_OP) {
         const UnaryOp& op = static_cast<const UnaryOp&>(expr);
         if(op.oprtor == Operator::NEGATION) {
             vec.push_back("neg %eax\n");

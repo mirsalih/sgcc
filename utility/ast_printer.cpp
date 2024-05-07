@@ -5,7 +5,7 @@ namespace sgcc
 {
 std::ostream& printExpr(std::ostream& os, const Exp& expr)
 {
-    if(expr.kind() == ExprKind::UnaryOp) {
+    if(expr.kind() == ExprKind::UNARY_OP) {
         const auto& op = static_cast<const UnaryOp&>(expr);
 
         if(op.oprtor == Operator::NEGATION) {
