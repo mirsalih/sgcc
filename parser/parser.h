@@ -18,6 +18,8 @@ private:
     std::unique_ptr<Function> parseFunction();
     std::unique_ptr<Statement> parseStatement();
     std::unique_ptr<Exp> parseExpression();
+    std::unique_ptr<Exp> parseTerm();
+    std::unique_ptr<Exp> parseFactor();
 
     std::vector<Token>::const_iterator current;
     std::vector<Token>::const_iterator end;

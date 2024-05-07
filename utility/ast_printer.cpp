@@ -3,27 +3,36 @@
 
 namespace sgcc
 {
-std::ostream& printExpr(std::ostream& os, const Exp& expr)
-{
-    if(expr.kind() == ExprKind::UNARY_OP) {
+std::ostream& printExpr(std::ostream& os, const Exp& expr) {
+    if(expr.kind() == ExprKind::BINARY_OP) {
+        const auto& op = static_cast<const BinaryOp&>(expr);
+
+        if(op.oprtor == Operator::ADDITION)         os << "+(";
+        if(op.oprtor == Operator::SUBTRACTION)      os << "-(";
+        if(op.oprtor == Operator::MULTIPLICATION)   os << "*(";
+        if(op.oprtor == Operator::DIVISION)         os << "/(";
+        
+        printExpr(os, *op.leftExpr);
+        os << ", ";
+        printExpr(os, *op.rightExpr);
+        os << ")";
+    }
+    else if(expr.kind() == ExprKind::UNARY_OP) {
         const auto& op = static_cast<const UnaryOp&>(expr);
 
-        if(op.oprtor == Operator::NEGATION) {
-            os << "OP<-> ";
-        }
-        if(op.oprtor == Operator::LOGICAL_NEGATION) {
-            os << "OP<!> ";
-        }
-        if(op.oprtor == Operator::BWISE_COMPLEMENT) {
-            os << "OP<~> ";
-        }
-        return printExpr(os, *op.expression);
+        if(op.oprtor == Operator::NEGATION)         os << "-(";
+        if(op.oprtor == Operator::LOGICAL_NEGATION) os << "!(";
+        if(op.oprtor == Operator::BWISE_COMPLEMENT) os << "~(";
+
+        printExpr(os, *op.expression);
+        os << ")";
     }
     else {
         const auto& c = static_cast<const Constant&>(expr);
-        os << "Int<" << c.value <<">\n";
-        return os;
+        os << "Int<" << c.value <<">";
     }
+    
+    return os;
 }
 
 std::ostream& print(std::ostream& os, const Node& ast)
@@ -35,6 +44,7 @@ std::ostream& print(std::ostream& os, const Node& ast)
     const Return& r = dynamic_cast<const Return&>(*p.function->body);
     os << "\t\tRETURN ";
     printExpr(os, *r.expression);
+    os << "\n";
 
     return os;
 }

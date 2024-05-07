@@ -7,6 +7,22 @@
 namespace sgcc
 {
 
+Operator convertToBinaryOperator(const std::string& str) {
+    if(str == "+") return Operator::ADDITION;
+    if(str == "-") return Operator::SUBTRACTION;
+    if(str == "*") return Operator::MULTIPLICATION;
+    if(str == "/") return Operator::DIVISION;
+    
+    throw std::runtime_error("Failed to Conver Token to BinaryOp: " + str);
+}
+
+Operator convertToUnaryOperator(const std::string& str) {
+    if(str == "~") return Operator::BWISE_COMPLEMENT;
+    if(str == "-") return Operator::NEGATION;
+    if(str == "!") return Operator::LOGICAL_NEGATION;
+    
+    throw std::runtime_error("Failed to Conver Token to UnaryOp: " + str);
+}
 /**
  * @brief Formal grammar for <program> ::= <function>
  * 
@@ -63,7 +79,6 @@ std::unique_ptr<Statement> Parser::parseStatement() {
     if (current->type != TokenType::RETURN_KEYWORD) return nullptr;
     advance();
     auto expression = parseExpression();
-    if(!expression) return nullptr;
     if (current->type != TokenType::SEMICOLON) return nullptr;
     advance();
     return std::make_unique<Return>(std::move(expression));
@@ -75,24 +90,54 @@ std::unique_ptr<Statement> Parser::parseStatement() {
  * @return std::unique_ptr<Exp> 
  */
 std::unique_ptr<Exp> Parser::parseExpression() {
-    if(current->type == TokenType::NUMBER) {
-        int value = std::stoi(current->text);
-        advance();
-        return std::make_unique<Constant>(value);
-    }
-    else if(current->type == TokenType::OPERATOR){
-        Operator op;
-        if(current->text == "-") op = Operator::NEGATION;
-        else if(current->text == "!") op = Operator::LOGICAL_NEGATION;
-        else if(current->text == "~") op = Operator::BWISE_COMPLEMENT;
-        advance();
+    using namespace std;
 
-        if (auto expr = parseExpression(); expr != nullptr) {
-            return std::make_unique<UnaryOp>(op, std::move(expr));
+    auto term = parseTerm();
+    while(current->text == "-" || current->text == "+") {
+        const auto op = convertToBinaryOperator(current->text);
+        advance();        
+        term = make_unique<BinaryOp>(op, move(term), parseTerm());
+    }
+    return term;
+}
+
+std::unique_ptr<Exp> Parser::parseTerm() {
+    using namespace std;
+
+    auto factor = parseFactor();
+    while(current->text == "*" || current->text == "/") {
+        const auto op = convertToBinaryOperator(current->text);
+        advance();
+        factor = make_unique<BinaryOp>(op, move(factor), parseFactor());
+    }
+    return factor;
+}
+
+std::unique_ptr<Exp> Parser::parseFactor() {
+    using namespace std;
+
+    if(current->type == TokenType::OPEN_PAREN) {
+        advance();
+        auto expr = parseExpression();
+        if(current->type != TokenType::CLOSE_PAREN) throw runtime_error("expected a ')'");
+        advance();
+        
+        return expr;
+    }
+    else if(current->text == "~" || current->text == "-" || current->text == "!") {
+        const auto op = convertToUnaryOperator(current->text);
+        advance();
+        if (auto factor = parseFactor()) {
+            return make_unique<UnaryOp>(op, move(factor));
         }
     }
-
-    return nullptr;
+    else if(current->type == TokenType::NUMBER) {
+        int value = stoi(current->text);
+        advance();
+        return make_unique<Constant>(value);
+    }
+    
+    throw runtime_error("expected a factor!");
 }
 
 }

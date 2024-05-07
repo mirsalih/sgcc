@@ -8,11 +8,12 @@
 namespace sgcc
 {
 enum class Operator {
-    NEGATION, BWISE_COMPLEMENT, LOGICAL_NEGATION
+    NEGATION, BWISE_COMPLEMENT, LOGICAL_NEGATION, ADDITION, SUBTRACTION,
+    MULTIPLICATION, DIVISION
 };
 
 enum class ExprKind {
-    CONSTANT, UNARY_OP
+    CONSTANT, UNARY_OP, BINARY_OP
 };
 
 struct Node {
@@ -45,6 +46,21 @@ struct UnaryOp: Exp {
 
     ExprKind kind() const override {
         return ExprKind::UNARY_OP;
+    }
+};
+
+struct BinaryOp: Exp {
+    Operator oprtor;
+    std::unique_ptr<Exp> leftExpr;
+    std::unique_ptr<Exp> rightExpr;
+    
+    explicit BinaryOp(Operator op, std::unique_ptr<Exp> leftE,std::unique_ptr<Exp> rightE):
+            oprtor(op), leftExpr(std::move(leftE)), rightExpr(std::move(rightE))
+    {
+    }
+
+    ExprKind kind() const override {
+        return ExprKind::BINARY_OP;
     }
 };
 
