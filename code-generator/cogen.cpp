@@ -7,26 +7,55 @@
 namespace sgcc
 {
 
-void exprToInstruction(std::vector<std::string>& vec, const Exp& expr) {
+void exprToInstruction(std::ostream& os, const Exp& expr) {
     using namespace std;
 
-    if(expr.kind() == ExprKind::UNARY_OP) {
+    if(expr.kind() == ExprKind::BINARY_OP) {
+        const auto& op = static_cast<const BinaryOp&>(expr);
+        
+        exprToInstruction(os, *op.leftExpr);
+        os << "push %rax\n";
+        exprToInstruction(os, *op.rightExpr);
+        os << "pop %rcx\n";
+
+        if(op.oprtor == Operator::ADDITION) {
+            os << "addl %ecx, %eax\n";
+        }
+        else if(op.oprtor == Operator::SUBTRACTION) {
+            os << "subl %eax, %ecx\n";
+            os << "movl %ecx, %eax\n";
+        }
+        else if(op.oprtor == Operator::MULTIPLICATION) {
+            os << "imul %ecx, %eax\n";
+        }
+        else {
+            // swap ecx with eax
+            os << "push %rax\n";
+            os << "movl %ecx, %eax\n";
+            os << "pop %rcx\n";
+
+            // start division
+            os << "cdq\n"; // extand eax into the edx by care the sign of value
+            os << "idivl %ecx\n"; // remiander to edx, quotient to eax
+        }
+    }
+    else if(expr.kind() == ExprKind::UNARY_OP) {
         const UnaryOp& op = static_cast<const UnaryOp&>(expr);
+
+        exprToInstruction(os, *op.expression);
         if(op.oprtor == Operator::NEGATION) {
-            vec.push_back("neg %eax\n");
+            os << "neg %eax\n";
         }
         else if(op.oprtor == Operator::BWISE_COMPLEMENT) {
-            vec.push_back("not %eax\n");
+            os << "not %eax\n";
         }
         else { // Operator::LOGICAL_NEGATION
-            vec.push_back("cmp $0, %eax\nmov $0, %eax\nsetz %al\n");
+            os << "cmpl $0, %eax\nmov $0, %eax\nsetz %al\n";
         }
-        exprToInstruction(vec, *op.expression);
     }
     else { // Constant
         const Constant& c = static_cast<const Constant&>(expr);
-        vec.push_back("movl $"s + std::to_string(c.value) + ", %eax\n");
-        return;
+        os << "movl $" << c.value << ", %eax\n";
     }
 }
 
@@ -43,13 +72,7 @@ Cogen::Cogen(std::ostream& os, const Program& p)
     
     try {
         Return& r = dynamic_cast<Return&>(*p.function->body);
-        std::vector<std::string> instructions;
-        exprToInstruction(instructions, *r.expression);
-
-        for(auto strIter = instructions.crbegin(); strIter != instructions.crend();
-        std::advance(strIter, 1)) {
-            os << *strIter;
-        }
+        exprToInstruction(os, *r.expression);
         os << "ret\n";
     }
     catch(const std::bad_cast& e) {
