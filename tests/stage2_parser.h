@@ -58,6 +58,10 @@ protected:
         EXPECT_FALSE(pp);
     }
 
+    void invalidTestThrow(const std::string& sourceCode) {
+        EXPECT_ANY_THROW(parser.parseProgram(lexer.tokenize(sourceCode)));
+    }
+
     void makeProgram(std::unique_ptr<sgcc::Exp> expr) {
         using namespace sgcc;
         using namespace std;
@@ -137,7 +141,7 @@ TEST_F(ParserTestStage_2, notZero) {
 
 TEST_F(ParserTestStage_2, missingConst) {
     SourceCode sourceCode{"stage_2/invalid/missing_const.c"};
-    invalidTest(sourceCode.src);
+    invalidTestThrow(sourceCode.src);
 }
 
 TEST_F(ParserTestStage_2, missingSemicolon) {
@@ -147,12 +151,12 @@ TEST_F(ParserTestStage_2, missingSemicolon) {
 
 TEST_F(ParserTestStage_2, nestedMissingConst) {
     SourceCode sourceCode{"stage_2/invalid/nested_missing_const.c"};
-    invalidTest(sourceCode.src);
+    invalidTestThrow(sourceCode.src);
 }
 
 TEST_F(ParserTestStage_2, wrongOrder) {
     SourceCode sourceCode{"stage_2/invalid/wrong_order.c"};
-    invalidTest(sourceCode.src);
+    invalidTestThrow(sourceCode.src);
 }
 
 #endif // __STAGE2_PARSER_H__

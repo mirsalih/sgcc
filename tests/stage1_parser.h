@@ -29,6 +29,10 @@ protected:
         EXPECT_FALSE(pp);
     }
 
+    void invalidTestThrow(const std::string& sourceCode) {
+        EXPECT_ANY_THROW(parser.parseProgram(lexer.tokenize(sourceCode)));
+    }
+
 protected:
     sgcc::Parser parser;
     sgcc::Lexer lexer;
@@ -64,7 +68,7 @@ TEST_F(ParserTestStage_1, missingParenthes) {
 }
 
 TEST_F(ParserTestStage_1, missingRetval) {
-    invalidTest(SourceCode{"stage_1/invalid/missing_retval.c"}.src);
+    invalidTestThrow(SourceCode{"stage_1/invalid/missing_retval.c"}.src);
 }
 
 TEST_F(ParserTestStage_1, noBrace) {

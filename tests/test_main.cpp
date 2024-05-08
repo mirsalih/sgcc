@@ -6,11 +6,13 @@
 #if TEST_LEXER
 #include "stage1_lexer.h"
 #include "stage2_lexer.h"
+#include "stage3_lexer.h"
 #endif
 
 #if TEST_PARSER
 #include "stage1_parser.h"
 #include "stage2_parser.h"
+#include "stage3_parser.h"
 #endif
 
 
