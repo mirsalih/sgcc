@@ -20,6 +20,10 @@ private:
     std::unique_ptr<Exp> parseExpression();
     std::unique_ptr<Exp> parseTerm();
     std::unique_ptr<Exp> parseFactor();
+    std::unique_ptr<Exp> parseLogicalAnd();
+    std::unique_ptr<Exp> parseEquality();
+    std::unique_ptr<Exp> parseRelational();
+    std::unique_ptr<Exp> parseAdditive();
 
     std::vector<Token>::const_iterator current;
     std::vector<Token>::const_iterator end;

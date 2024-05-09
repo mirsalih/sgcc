@@ -8,10 +8,17 @@ namespace sgcc
 {
 
 Operator convertToBinaryOperator(const std::string& str) {
-    if(str == "+") return Operator::ADDITION;
-    if(str == "-") return Operator::SUBTRACTION;
-    if(str == "*") return Operator::MULTIPLICATION;
-    if(str == "/") return Operator::DIVISION;
+    if(str == "+")  return Operator::ADDITION;
+    if(str == "-")  return Operator::SUBTRACTION;
+    if(str == "*")  return Operator::MULTIPLICATION;
+    if(str == "||") return Operator::OR;
+    if(str == "&&") return Operator::AND;
+    if(str == "==") return Operator::EQUAL;
+    if(str == "!=") return Operator::NOT_EQUAL;
+    if(str == "<")  return Operator::LESS_THAN;
+    if(str == "<=") return Operator::LESS_THAN_OR_EQUAL;
+    if(str == ">")  return Operator::GREATER_THAN;
+    if(str == ">=") return Operator::GREATER_THAN_OR_EQUAL;
     
     throw std::runtime_error("Failed to Conver Token to BinaryOp: " + str);
 }
@@ -85,12 +92,79 @@ std::unique_ptr<Statement> Parser::parseStatement() {
 }
 
 /**
- * @brief Formal grammar for <exp> ::= <int>
+ * @brief Formal grammar for <exp> ::= <logical-and-exp> { "||" <logical-and-exp> }
  * 
  * @return std::unique_ptr<Exp> 
  */
 std::unique_ptr<Exp> Parser::parseExpression() {
     using namespace std;
+
+    auto logicalAnd = parseLogicalAnd();
+    while(current->text == "||") {
+        advance();
+        logicalAnd = make_unique<BinaryOp>(Operator::OR, move(logicalAnd), parseLogicalAnd());
+    }
+    return logicalAnd;
+}
+
+/**
+ * @brief Formal grammar for <logical-and-exp> ::= <equality-exp> { "&&" <equality-exp> }
+ * 
+ * @return std::unique_ptr<Exp> 
+ */
+std::unique_ptr<Exp> Parser::parseLogicalAnd() {
+    using namespace std;
+
+    auto equality = parseEquality();
+    while(current->text == "&&") {
+        advance();
+        equality = make_unique<BinaryOp>(Operator::AND, move(equality), parseEquality());
+    }
+    return equality;
+}
+
+/**
+ * @brief Formal grammar for <equality-exp> ::= <relational-exp> { ("!=" | "==") <relational-exp> }
+ * 
+ * @return std::unique_ptr<Exp> 
+ */
+std::unique_ptr<Exp> Parser::parseEquality() {
+    using namespace std;
+
+    auto relational = parseRelational();
+    while(current->text == "!=" || current->text == "==") {
+        const auto op = convertToBinaryOperator(current->text);
+        advance();
+        relational = make_unique<BinaryOp>(op, move(relational), parseRelational());
+    }
+    return relational;
+}
+
+/**
+ * @brief Formal grammar for <relational-exp> ::= <additive-exp> { ("<" | ">" | "<=" | ">=") <additive-exp> }
+ * 
+ * @return std::unique_ptr<Exp> 
+ */
+std::unique_ptr<Exp> Parser::parseRelational() {
+    using namespace std;
+
+    auto additive = parseAdditive();
+    while(current->text == "<" || current->text == ">" || current->text == "<="
+          || current->text == ">=") {
+        const auto op = convertToBinaryOperator(current->text);
+        advance();        
+        additive = make_unique<BinaryOp>(op, move(additive), parseAdditive());
+    }
+    return additive;
+}
+
+/**
+ * @brief Formal grammar for <additive-exp> ::= <term> { ("+" | "-") <term> }
+ * 
+ * @return std::unique_ptr<Exp> 
+ */
+std::unique_ptr<Exp> Parser::parseAdditive() {
+        using namespace std;
 
     auto term = parseTerm();
     while(current->text == "-" || current->text == "+") {
@@ -101,6 +175,11 @@ std::unique_ptr<Exp> Parser::parseExpression() {
     return term;
 }
 
+/**
+ * @brief Formal grammar for <term> ::= <factor> { ("*" | "/") <factor> }
+ * 
+ * @return std::unique_ptr<Exp> 
+ */
 std::unique_ptr<Exp> Parser::parseTerm() {
     using namespace std;
 
@@ -113,6 +192,11 @@ std::unique_ptr<Exp> Parser::parseTerm() {
     return factor;
 }
 
+/**
+ * @brief Formal grammar for <factor> ::= "(" <exp> ")" | <unary_op> <factor> | <int>
+ * 
+ * @return std::unique_ptr<Exp> 
+ */
 std::unique_ptr<Exp> Parser::parseFactor() {
     using namespace std;
 
