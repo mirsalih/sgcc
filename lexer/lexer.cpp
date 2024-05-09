@@ -90,8 +90,14 @@ std::vector<Token> Lexer::tokenize(const std::string& str)
                     advance();
                     break;
                 case '!':
-                    tokens.push_back({TokenType::OPERATOR, "!"});
                     advance();
+                    if(currentChar == '=') {
+                        tokens.push_back({TokenType::OPERATOR, "!="});
+                        advance();
+                    }
+                    else {
+                        tokens.push_back({TokenType::OPERATOR, "!"});
+                    }
                     break;
                 case '~':
                     tokens.push_back({TokenType::OPERATOR, "~"});
@@ -108,6 +114,47 @@ std::vector<Token> Lexer::tokenize(const std::string& str)
                 case '/':
                     tokens.push_back({TokenType::OPERATOR, "/"});
                     advance();
+                    break;
+                case '&':
+                    advance();
+                    if(currentChar == '&') {
+                        tokens.push_back({TokenType::OPERATOR, "&&"});
+                        advance();
+                    }
+                    break;
+                case '|':
+                    advance();
+                    if(currentChar == '|') {
+                        tokens.push_back({TokenType::OPERATOR, "||"});
+                        advance();
+                    }
+                    break;
+                case '=':
+                    advance();
+                    if(currentChar == '=') {
+                        tokens.push_back({TokenType::OPERATOR, "=="});
+                        advance();
+                    }
+                    break;
+                case '<':
+                    advance();
+                    if(currentChar == '=') {
+                        tokens.push_back({TokenType::OPERATOR, "<="});
+                        advance();
+                    }
+                    else {
+                        tokens.push_back({TokenType::OPERATOR, "<"});
+                    }
+                    break;
+                case '>':
+                    advance();
+                    if(currentChar == '=') {
+                        tokens.push_back({TokenType::OPERATOR, ">="});
+                        advance();
+                    }
+                    else {
+                        tokens.push_back({TokenType::OPERATOR, ">"});
+                    }
                     break;
             }
         }
