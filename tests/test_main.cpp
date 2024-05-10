@@ -1,7 +1,6 @@
 #include "test_environment.h"
-
 #define TEST_LEXER 1
-#define TEST_PARSER 0
+#define TEST_PARSER 1
 
 #if TEST_LEXER
 #include "stage1_lexer.h"
@@ -14,6 +13,7 @@
 #include "stage1_parser.h"
 #include "stage2_parser.h"
 #include "stage3_parser.h"
+#include "stage4_parser.h"
 #endif
 
 

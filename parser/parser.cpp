@@ -11,6 +11,7 @@ Operator convertToBinaryOperator(const std::string& str) {
     if(str == "+")  return Operator::ADDITION;
     if(str == "-")  return Operator::SUBTRACTION;
     if(str == "*")  return Operator::MULTIPLICATION;
+    if(str == "/")  return Operator::DIVISION;
     if(str == "||") return Operator::OR;
     if(str == "&&") return Operator::AND;
     if(str == "==") return Operator::EQUAL;
