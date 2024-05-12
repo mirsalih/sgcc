@@ -18,6 +18,7 @@ int main(int argc, char** argv) {
         std::cerr << "no input file ";
         return 0;
     }
+    cout << "compiling source code: " << argv[1] << '\n';
 
     try {
         const std::string sourCode = SourceReader{}(argv[1]);
