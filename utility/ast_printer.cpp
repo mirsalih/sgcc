@@ -7,10 +7,18 @@ std::ostream& printExpr(std::ostream& os, const Exp& expr) {
     if(expr.kind() == ExprKind::BINARY_OP) {
         const auto& op = static_cast<const BinaryOp&>(expr);
 
-        if(op.oprtor == Operator::ADDITION)         os << "+(";
-        if(op.oprtor == Operator::SUBTRACTION)      os << "-(";
-        if(op.oprtor == Operator::MULTIPLICATION)   os << "*(";
-        if(op.oprtor == Operator::DIVISION)         os << "/(";
+        if(op.oprtor == Operator::ADDITION)                 os << "+(";
+        if(op.oprtor == Operator::SUBTRACTION)              os << "-(";
+        if(op.oprtor == Operator::MULTIPLICATION)           os << "*(";
+        if(op.oprtor == Operator::DIVISION)                 os << "/(";
+        if(op.oprtor == Operator::OR)                       os << "||(";
+        if(op.oprtor == Operator::AND)                      os << "&&(";
+        if(op.oprtor == Operator::EQUAL)                    os << "==(";
+        if(op.oprtor == Operator::NOT_EQUAL)                os << "!=(";
+        if(op.oprtor == Operator::LESS_THAN)                os << "<(" ;
+        if(op.oprtor == Operator::LESS_THAN_OR_EQUAL)       os << "<=(";
+        if(op.oprtor == Operator::GREATER_THAN)             os << ">(" ;
+        if(op.oprtor == Operator::GREATER_THAN_OR_EQUAL)    os << ">=(";
         
         printExpr(os, *op.leftExpr);
         os << ", ";
